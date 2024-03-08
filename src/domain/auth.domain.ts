@@ -10,43 +10,39 @@ export interface Auth {
 }
 
 export interface AuthRepository {
-  getById(id: string): Promise<FirebaseFirestore.WriteResult>;
+  getById(id: string): Promise<Auth>;
 
-  create(account: Auth): Promise<FirebaseFirestore.WriteResult>;
+  create(account: Auth): Promise<Auth>;
 
-  update(account: Auth): Promise<FirebaseFirestore.WriteResult>;
+  update(account: Auth): Promise<Auth>;
 
-  getAll(): Promise<FirebaseFirestore.WriteResult[]>;
+  getAll(): Promise<Auth[]>;
 
   verifyToken(token: string): Promise<DecodedIdToken>;
 }
 
 export interface AuthUseCase {
-  getById(id: string): Promise<FirebaseFirestore.WriteResult>;
+  getById(id: string): Promise<Auth>;
 
-  create(account: Auth): Promise<FirebaseFirestore.WriteResult>;
+  create(account: Auth): Promise<Auth>;
 
-  update(account: Auth): Promise<FirebaseFirestore.WriteResult>;
+  update(account: Auth): Promise<Auth>;
 
-  getAll(): Promise<FirebaseFirestore.WriteResult[]>;
+  getAll(): Promise<Auth[]>;
 
   verifyToken(token: string): Promise<DecodedIdToken>;
 }
 
 export interface AuthInterop {
-  getById(id: string, token: string): Promise<FirebaseFirestore.WriteResult>;
+  getById(id: string, token: string): Promise<Auth>;
 
-  getAll(token: string): Promise<FirebaseFirestore.WriteResult[]>;
+  getAll(token: string): Promise<Auth[]>;
 
-  signUp(token: string): Promise<FirebaseFirestore.WriteResult>;
+  signUp(token: string): Promise<Auth>;
 
-  changeRole(
-    token: string,
-    id: string,
-    role: string,
-  ): Promise<FirebaseFirestore.WriteResult>;
+  changeRole(token: string, id: string, role: string): Promise<Auth>;
 
-  block(token: string, id: string): Promise<FirebaseFirestore.WriteResult>;
+  block(token: string, id: string): Promise<Auth>;
 }
 
 export const ErrorUnauthorized = new HttpException(

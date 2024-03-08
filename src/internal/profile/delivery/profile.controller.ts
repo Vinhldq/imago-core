@@ -22,6 +22,12 @@ export class ProfileController {
     return this.profileInterop.get(id, token);
   }
 
+  @Get('adminuser')
+  getAdminUser(@Headers() headers: any, @Query('page') page: number) {
+    let token = headers['authorization'];
+    return this.profileInterop.getAllAuthProfile(token, page);
+  }
+
   @Get('mine')
   getMine(@Headers() headers: any) {
     let token = headers['authorization'];

@@ -9,14 +9,19 @@ import {
   Query,
   Headers,
 } from '@nestjs/common';
-import { ErrorInvalidPostBody, PostDomain, PostInterop } from 'src/domain/post.domain';
+import {
+  ErrorInvalidPostBody,
+  PostDomain,
+  PostInterop,
+} from 'src/domain/post.domain';
 import any = jasmine.any;
 
 @Controller('v1/post')
 export class HttpController {
   constructor(@Inject('PostInterop') private interop: PostInterop) {}
+
   @Get()
-  async getPost(@Headers() headers:any,@Query('id') id: string) {
+  async getPost(@Headers() headers: any, @Query('id') id: string) {
     let token = headers['authorization'];
     try {
       return await this.interop.getDetail(id, token);
@@ -24,11 +29,9 @@ export class HttpController {
       throw e;
     }
   }
+
   @Get('all')
-  async getAllPost(
-    @Headers() headers:any,
-    @Query('page') page: number,
-  ) {
+  async getAllPost(@Headers() headers: any, @Query('page') page: number) {
     let token = headers['authorization'];
     try {
       return await this.interop.getAllPost(token, page);
@@ -104,7 +107,7 @@ export class HttpController {
   ) {
     let token = headers['authorization'];
     try {
-      return await this.interop.getShare( token, page, size);
+      return await this.interop.getShare(token, page, size);
     } catch (e) {
       throw e;
     }

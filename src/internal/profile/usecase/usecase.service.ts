@@ -7,6 +7,7 @@ import {
   ProfileRepository,
   ProfileUseCase,
 } from 'src/domain/profile.domain';
+import { Auth } from '../../../domain/auth.domain';
 
 @Injectable()
 export class UsecaseService implements ProfileUseCase {
@@ -65,6 +66,15 @@ export class UsecaseService implements ProfileUseCase {
   async getAll(): Promise<Profile[]> {
     try {
       return this.profileRepository.getAll();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // @ts-ignore
+  async getAllAuthProfile(page: number): Promise<any> {
+    try {
+      return this.profileRepository.getAllAuthProfile(page);
     } catch (error) {
       throw error;
     }

@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
-  AllPosts, ErrorIllegalUpdate,
+  AllPosts,
+  ErrorIllegalUpdate,
   PostDomain,
   PostInterop,
   PostResponse,
@@ -14,7 +15,6 @@ export class BaseInteropService implements PostInterop {
     @Inject('PostUseCase') private useCase: PostUseCase,
     @Inject('AuthUseCase') private authUsecase: AuthUseCase,
   ) {}
-
 
   async getDetail(id: string, token: string): Promise<PostDomain> {
     try {
@@ -65,10 +65,8 @@ export class BaseInteropService implements PostInterop {
       throw e;
     }
   }
-  async getAllPost(
-    token: string,
-    page: number,
-    ): Promise<AllPosts> {
+
+  async getAllPost(token: string, page: number): Promise<AllPosts> {
     try {
       await this.authUsecase.verifyToken(token);
       return this.useCase.getAllPost(page);
@@ -76,6 +74,7 @@ export class BaseInteropService implements PostInterop {
       throw e;
     }
   }
+
   async getByCateId(
     cateId: string,
     token: string,
@@ -96,7 +95,7 @@ export class BaseInteropService implements PostInterop {
     size: number,
   ): Promise<PostResponse> {
     try {
-      const idToken=await this.authUsecase.verifyToken(token);
+      const idToken = await this.authUsecase.verifyToken(token);
       return this.useCase.getShare(idToken.uid, page, size);
     } catch (e) {
       throw e;
@@ -111,15 +110,15 @@ export class BaseInteropService implements PostInterop {
       post.comments = [];
       post.reaction = [];
       post.share = [];
-      post.createdAt =  new Date();
-      if(post.cateId==undefined || post.cateId==null){
+      post.createdAt = new Date();
+      if (post.cateId == undefined || post.cateId == null) {
         post.cateId = [];
       }
 
-      if(post.mention==undefined || post.mention==null) {
+      if (post.mention == undefined || post.mention == null) {
         post.mention = [];
       }
-      if(post.hashtag==undefined || post.hashtag==null){
+      if (post.hashtag == undefined || post.hashtag == null) {
         post.hashtag = [];
       }
       post.updatedAt = null;
@@ -131,20 +130,17 @@ export class BaseInteropService implements PostInterop {
   }
 
   async update(post: PostDomain, token: string): Promise<boolean> {
-
-      try {
-        const idToken = await this.authUsecase.verifyToken(token)
-        if(post.creatorId==idToken.uid) {
-          post.updatedAt = new Date();
-
-          return this.useCase.update(post);
-        }else{
-          throw ErrorIllegalUpdate;
-        }
-      } catch (e) {
-        throw e;
+    try {
+      const idToken = await this.authUsecase.verifyToken(token);
+      if (post.creatorId == idToken.uid) {
+        post.updatedAt = new Date();
+        return this.useCase.update(post);
+      } else {
+        throw ErrorIllegalUpdate;
       }
-
+    } catch (e) {
+      throw e;
+    }
   }
 
   async delete(id: string, token: string): Promise<boolean> {
@@ -155,5 +151,4 @@ export class BaseInteropService implements PostInterop {
       throw e;
     }
   }
-
 }

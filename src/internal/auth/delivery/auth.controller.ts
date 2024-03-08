@@ -15,17 +15,13 @@ export class AuthController {
   constructor(@Inject('AuthInterop') private authInterop: AuthInterop) {}
 
   @Post()
-  async signUp(
-    @Headers() headers: any,
-  ): Promise<FirebaseFirestore.WriteResult> {
+  async signUp(@Headers() headers: any): Promise<Auth> {
     let token = headers['authorization'];
     return await this.authInterop.signUp(token);
   }
 
   @Get('list')
-  async getAll(
-    @Headers() headers: any,
-  ): Promise<FirebaseFirestore.WriteResult[]> {
+  async getAll(@Headers() headers: any): Promise<Auth[]> {
     let token = headers['authorization'];
     return await this.authInterop.getAll(token);
   }
@@ -34,7 +30,7 @@ export class AuthController {
   async getById(
     @Headers() headers: any,
     @Query('id') id: string,
-  ): Promise<FirebaseFirestore.WriteResult> {
+  ): Promise<Auth> {
     let token = headers['authorization'];
     return await this.authInterop.getById(id, token);
   }
@@ -44,16 +40,13 @@ export class AuthController {
     @Headers() headers: any,
     @Query('id') id: string,
     @Query('role') role: string,
-  ): Promise<FirebaseFirestore.WriteResult> {
+  ): Promise<Auth> {
     let token = headers['authorization'];
     return await this.authInterop.changeRole(token, id, role);
   }
 
   @Put('block')
-  async block(
-    @Headers() headers: any,
-    @Query('id') id: string,
-  ): Promise<FirebaseFirestore.WriteResult> {
+  async block(@Headers() headers: any, @Query('id') id: string): Promise<Auth> {
     let token = headers['authorization'];
     return await this.authInterop.block(token, id);
   }

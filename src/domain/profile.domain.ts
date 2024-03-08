@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { Auth } from './auth.domain';
 
 export interface Profile {
   id: string;
@@ -23,6 +24,8 @@ export interface ProfileRepository {
   create(profile: Profile): Promise<boolean>;
 
   update(profile: Profile): Promise<boolean>;
+
+  getAllAuthProfile(page: number): Promise<any>;
 }
 
 export interface ProfileUseCase {
@@ -33,6 +36,8 @@ export interface ProfileUseCase {
   create(profile: Profile): Promise<boolean>;
 
   update(profile: Profile): Promise<boolean>;
+
+  getAllAuthProfile(page: number): Promise<any>;
 }
 
 export interface ProfileInterop {
@@ -57,6 +62,8 @@ export interface ProfileInterop {
     profileId: string,
     otherProfileId: string,
   ): Promise<boolean>;
+
+  getAllAuthProfile(token: string, page: number): Promise<any>;
 }
 
 export const ErrorProfileExists = new HttpException(

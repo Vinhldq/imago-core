@@ -1,34 +1,54 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Report, ReportInterop, ReportUseCase } from '../../../../domain/report.domain';
-import {AuthUseCase} from '../../../../domain/auth.domain';
+import {
+  AllReport,
+  Report,
+  ReportInterop,
+  ReportUseCase,
+} from '../../../../domain/report.domain';
+import { AuthUseCase } from '../../../../domain/auth.domain';
 
 @Injectable()
-export class BaseServiceInterop implements ReportInterop{
+export class BaseServiceInterop implements ReportInterop {
+  constructor(
+    @Inject('ReportUseCase') private useCase: ReportUseCase,
+    @Inject('AuthUseCase') private authUseCase: AuthUseCase,
+  ) {}
 
-  constructor(@Inject('ReportUseCase') private useCase: ReportUseCase,
-              @Inject('AuthUseCase') private authUseCase: AuthUseCase) {
-  }
-
-  create(report: Report): Promise<Report> {
-    return this.useCase.create(report);
-  }
-
-  async getAll(token: string): Promise<Report[]> {
+  async create(token: string, report: Object) {
     try {
       await this.authUseCase.verifyToken(token);
-      return this.useCase.getAll();
-    }
-    catch (e) {
+      this.useCase.create(report);
+    } catch (e) {
       throw e;
     }
   }
 
-  async update( id: string, token: string): Promise<Report> {
+  async getAllByStatusCompleted(
+    token: string,
+    page: number,
+  ): Promise<AllReport> {
     try {
       await this.authUseCase.verifyToken(token);
-      return this.useCase.update( id);
+      return this.useCase.getAllByStatusCompleted(page);
+    } catch (e) {
+      throw e;
     }
-    catch (e) {
+  }
+
+  async getAllByStatusPending(token: string, page: number): Promise<AllReport> {
+    try {
+      await this.authUseCase.verifyToken(token);
+      return this.useCase.getAllByStatusPending(page);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async update(id: string, token: string) {
+    try {
+      await this.authUseCase.verifyToken(token);
+      this.useCase.update(id);
+    } catch (e) {
       throw e;
     }
   }

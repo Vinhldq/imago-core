@@ -1,14 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import {
-  errMessUnauthorized,
-  errorRoleNotFound,
   Role,
-  RoleInterop,
+  RolePagination,
   RoleRepository,
-  RoleUseCase,
+  searchRoleEmpty,
 } from '../../../domain/role.domain';
 import * as admin from 'firebase-admin';
-import { DecodedIdToken } from 'firebase-admin/lib/auth';
+import { Auth } from '../../../domain/auth.domain';
 
 @Injectable()
 export class FirestoreRepositoryService implements RoleRepository {
@@ -18,23 +16,64 @@ export class FirestoreRepositoryService implements RoleRepository {
     this.db = admin.firestore();
   }
 
-  async getAllRole(): Promise<Role[]> {
-    return await this.db
-      .collection('roles')
-      .get()
-      .then((querySnapshot) => {
-        let roles: Role[] = [];
-        querySnapshot.forEach((doc) => {
-          roles.push(doc.data() as Role);
-        });
-        return roles;
-      });
+  async getAllRole(page: number): Promise<RolePagination> {
+    const roleRef = this.db.collection('roles');
+    const snapshot = await roleRef.get();
+    const roles = snapshot.docs.map((doc) => doc.data() as Role);
+    const size = 10;
+    return {
+      data: roles.slice((page - 1) * size, page * size),
+      endPage: Math.ceil(roles.length / size),
+    };
+  }
+
+  async getListRole(page: number): Promise<any> {
+    const size = 10;
+    let auth = await this.db.collection('auths').get();
+    let profile = await this.db.collection('profile').get();
+    let result: any[] = [];
+    auth.forEach((doc) => {
+      let data = doc.data() as Auth;
+      let profileData = profile.docs.find((p) => p.id === data.id);
+      if (data.role === 'admin') {
+        if (profileData) {
+          result.push({
+            ...data,
+            profile: profileData.data(),
+          });
+        }
+      }
+    });
+    page = Math.ceil(result.length / size);
+    return {
+      data: result.slice((+page - 1) * size, +page * size),
+      endPage: page,
+    };
+  }
+
+  async searchRole(keyword: string, page: number): Promise<RolePagination> {
+    const roleRef = await this.getAllRole(page);
+    const roles = roleRef.data;
+
+    const pageData = this.db.collection('roles');
+    const snapshot = await pageData.get();
+    const data = snapshot.docs.map((doc) => doc.data() as Role);
+
+    let result = roles.filter((role) => {
+      return role.name.toLowerCase().includes(keyword.toLowerCase());
+    });
+    const size = roles.length;
+    if (result.length === 0) {
+      throw searchRoleEmpty;
+    }
+    return {
+      data: result.slice((page - 1) * size, page * size),
+      endPage: Math.ceil(result.length / size),
+    };
   }
 
   async createRole(role: Role): Promise<admin.firestore.WriteResult> {
-    role.id = this.db.collection('roles').doc().id;
-    const roleRef = this.db.collection('roles').doc(role.id).set(role);
-    return roleRef;
+    return await this.db.collection('roles').doc(role.id).set(role);
   }
 
   async updateRole(
@@ -42,23 +81,10 @@ export class FirestoreRepositoryService implements RoleRepository {
     role: Partial<Role>,
   ): Promise<admin.firestore.WriteResult> {
     role.id = id;
-    const roleRef = await this.db.collection('roles').doc(id).update(role);
-    return roleRef;
+    return await this.db.collection('roles').doc(id).update(role);
   }
 
-  deleteRole(id: string) {
+  deleteRole(id: string): Promise<admin.firestore.WriteResult> {
     return this.db.collection('roles').doc(id).delete();
-  }
-
-  async verifyToken(token: string): Promise<DecodedIdToken> {
-    try {
-      let decodedToken = await admin.auth().verifyIdToken(token);
-      if (decodedToken.uid == null) {
-        throw errMessUnauthorized;
-      }
-      return decodedToken;
-    } catch (error) {
-      throw errMessUnauthorized;
-    }
   }
 }

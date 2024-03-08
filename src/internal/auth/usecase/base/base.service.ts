@@ -16,7 +16,7 @@ export class BaseService implements AuthUseCase {
     return this.repository.verifyToken(token);
   }
 
-  async create(account: Auth): Promise<FirebaseFirestore.WriteResult> {
+  async create(account: Auth): Promise<Auth> {
     try {
       const isExists = await this.repository.getById(account.id);
       if (isExists) {
@@ -35,7 +35,7 @@ export class BaseService implements AuthUseCase {
     }
   }
 
-  getAll(): Promise<FirebaseFirestore.WriteResult[]> {
+  getAll(): Promise<Auth[]> {
     try {
       return this.repository.getAll();
     } catch (e) {
@@ -43,7 +43,7 @@ export class BaseService implements AuthUseCase {
     }
   }
 
-  getById(id: string): Promise<FirebaseFirestore.WriteResult> {
+  getById(id: string): Promise<Auth> {
     try {
       if (!id) {
         throw ErrorIdNotFound;
@@ -55,7 +55,7 @@ export class BaseService implements AuthUseCase {
     }
   }
 
-  update(account: Auth): Promise<FirebaseFirestore.WriteResult> {
+  update(account: Auth): Promise<Auth> {
     try {
       const isExists = this.repository.getById(account.id);
       if (isExists) {

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { AuthUseCase } from 'src/domain/auth.domain';
+import { Auth, AuthUseCase } from 'src/domain/auth.domain';
 import {
   ErrorIdEmpty,
   Profile,
@@ -150,6 +150,15 @@ export class InteropService implements ProfileInterop {
     try {
       const decodedToken = this.authUseCase.verifyToken(token);
       return this.profileUseCase.getAll();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllAuthProfile(token: string, page: number): Promise<any> {
+    try {
+      await this.authUseCase.verifyToken(token);
+      return this.profileUseCase.getAllAuthProfile(page);
     } catch (error) {
       throw error;
     }

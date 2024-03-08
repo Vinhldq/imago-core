@@ -22,6 +22,7 @@ export class FirebaseService implements AuthRepository {
   async verifyToken(token: string): Promise<DecodedIdToken> {
     try {
       const decodedToken = await this.auth.verifyIdToken(token);
+
       if (!decodedToken) {
         throw ErrorInvalidToken;
       }
@@ -31,42 +32,43 @@ export class FirebaseService implements AuthRepository {
     }
   }
 
-  async create(account: Auth): Promise<FirebaseFirestore.WriteResult> {
-    return await this.db.collection('auth').doc(account.id).set(account);
+  async create(account: Auth): Promise<Auth> {
+    await this.db.collection('auths').doc(account.id).set(account);
+    return account;
   }
 
-  async getAll(): Promise<FirebaseFirestore.WriteResult[]> {
+  async getAll(): Promise<Auth[]> {
     return await this.db
-      .collection('auth')
+      .collection('auths')
       .get()
       .then((snapshot) => {
-        let result: FirebaseFirestore.WriteResult[] = [];
+        let result: Auth[] = [];
         snapshot.forEach((doc) => {
-          result.push(doc.data() as FirebaseFirestore.WriteResult);
+          result.push(doc.data() as Auth);
         });
         return result;
       });
   }
 
-  async getById(id: string): Promise<FirebaseFirestore.WriteResult> {
+  async getById(id: string): Promise<Auth> {
     return await this.db
-      .collection('auth')
+      .collection('auths')
       .doc(id)
       .get()
       .then((doc) => {
-        // console.log(doc.exists);
         if (doc.exists) {
-          return doc.data() as FirebaseFirestore.WriteResult;
+          return doc.data() as Auth;
         } else {
           throw ErrorAccountNotFound;
         }
       });
   }
 
-  async update(account: Auth): Promise<FirebaseFirestore.WriteResult> {
-    return await this.db
-      .collection('auth')
+  async update(account: Auth): Promise<Auth> {
+    await this.db
+      .collection('auths')
       .doc(account.id)
       .update({ ...account });
+    return account;
   }
 }

@@ -13,13 +13,10 @@ import {
 export class InteropService implements AuthInterop {
   constructor(@Inject('AuthUseCase') private authUseCase: AuthUseCase) {}
 
-  async block(
-    token: string,
-    id: string,
-  ): Promise<FirebaseFirestore.WriteResult> {
+  async block(token: string, id: string): Promise<Auth> {
     try {
       const decodedToken = await this.authUseCase.verifyToken(token);
-      const account = (await this.authUseCase.getById(id)) as any as Auth;
+      const account = await this.authUseCase.getById(id);
       account.isBanned = true;
       if (account.id === decodedToken.uid) {
         throw ErrorBlockFailed;
@@ -31,14 +28,10 @@ export class InteropService implements AuthInterop {
     }
   }
 
-  async changeRole(
-    token: string,
-    id: string,
-    role: string,
-  ): Promise<FirebaseFirestore.WriteResult> {
+  async changeRole(token: string, id: string, role: string): Promise<Auth> {
     try {
       const decodedToken = await this.authUseCase.verifyToken(token);
-      const account = (await this.authUseCase.getById(id)) as any as Auth;
+      const account = await this.authUseCase.getById(id);
       account.role = role;
       if (account.id === decodedToken.uid) {
         throw ErrorChangeRoleFailed;
@@ -54,12 +47,10 @@ export class InteropService implements AuthInterop {
     }
   }
 
-  async getAll(token: string): Promise<FirebaseFirestore.WriteResult[]> {
+  async getAll(token: string): Promise<Auth[]> {
     try {
       const decodedToken = await this.authUseCase.verifyToken(token);
-      const isAdmin = (await this.authUseCase.getById(
-        decodedToken.uid,
-      )) as any as Auth;
+      const isAdmin = await this.authUseCase.getById(decodedToken.uid);
 
       if (isAdmin.role !== 'admin') {
         throw ErrorPermissionDenied;
@@ -70,10 +61,7 @@ export class InteropService implements AuthInterop {
     }
   }
 
-  async getById(
-    id: string,
-    token: string,
-  ): Promise<FirebaseFirestore.WriteResult> {
+  async getById(id: string, token: string): Promise<Auth> {
     try {
       const decodedToken = await this.authUseCase.verifyToken(token);
       return await this.authUseCase.getById(id);
@@ -82,7 +70,7 @@ export class InteropService implements AuthInterop {
     }
   }
 
-  async signUp(token: string): Promise<FirebaseFirestore.WriteResult> {
+  async signUp(token: string): Promise<Auth> {
     try {
       const decodedToken = await this.authUseCase.verifyToken(token);
       const accountData: Auth = {

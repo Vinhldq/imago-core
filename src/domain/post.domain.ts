@@ -19,7 +19,7 @@ export interface PostDomain {
 
 export interface PostResponse {
   data: PostDomain[];
-  endpage: number;
+  endPage: number;
 }
 export interface AllPosts {
   data: PostDomain[];
@@ -57,9 +57,7 @@ export interface PostRepository {
     size: number,
   ): Promise<PostResponse>;
 
-  getAllPost(
-    page: number,
-  ): Promise<AllPosts>;
+  getAllPost(page: number): Promise<AllPosts>;
 }
 
 export interface PostUseCase {
@@ -92,9 +90,7 @@ export interface PostUseCase {
     size: number,
   ): Promise<PostResponse>;
 
-  getAllPost(
-    page: number,
-  ): Promise<AllPosts>;
+  getAllPost(page: number): Promise<AllPosts>;
 }
 
 export interface PostInterop {
@@ -116,12 +112,7 @@ export interface PostInterop {
     size: number,
   ): Promise<PostResponse>;
 
-  getShare(
-    token: string,
-    page: number,
-    size: number,
-  ): Promise<PostResponse>;
-
+  getShare(token: string, page: number, size: number): Promise<PostResponse>;
 
   create(post: PostDomain, token: string): Promise<boolean>;
 
@@ -136,10 +127,7 @@ export interface PostInterop {
     size: number,
   ): Promise<PostResponse>;
 
-  getAllPost(
-    token: string,
-    page: number,
-    ): Promise<AllPosts>;
+  getAllPost(token: string, page: number): Promise<AllPosts>;
 }
 
 export const ErrorPostNotFound: HttpException = new HttpException(

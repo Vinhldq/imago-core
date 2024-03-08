@@ -9,16 +9,32 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { Role, RoleInterop } from '../../domain/role.domain';
+import { Role, RoleInterop } from '../../../domain/role.domain';
 
 @Controller('/v1/role')
 export class RoleController {
   constructor(@Inject('RoleInterop') private roleInterop: RoleInterop) {}
 
-  @Get()
-  getAllRole(@Headers() headers: any) {
+  @Get('/all')
+  getAllRole(@Headers() headers: any, @Query('page') page: number) {
     let token = headers['authorization'];
-    return this.roleInterop.getAllRole(token);
+    return this.roleInterop.getAllRole(token, page);
+  }
+
+  @Get('list')
+  getListRole(@Headers() headers: any, @Query('page') page: number) {
+    let token = headers['authorization'];
+    return this.roleInterop.getListRole(token, page);
+  }
+
+  @Get()
+  searchRole(
+    @Headers() headers: any,
+    @Query('keyword') keyword: string,
+    @Query('page') page: number,
+  ) {
+    let token = headers['authorization'];
+    return this.roleInterop.searchRole(token, keyword, page);
   }
 
   @Post()
