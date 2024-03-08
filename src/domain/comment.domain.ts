@@ -52,31 +52,40 @@ export const ErrorEmptyPage: HttpException = new HttpException(
   'Comment page is empty',
   400,
 );
-export const ErrorCommentContent: HttpException = new HttpException('Comment content cannot be empty',
+export const ErrorCommentContent: HttpException = new HttpException(
+  'Comment content cannot be empty',
 400,
 );
-export const ErrorCommentNotDeleted: HttpException = new HttpException('Comment not found to delete',
+export const ErrorCommentNotDeleted: HttpException = new HttpException(
+  'Comment not found to delete',
 400,
 );
-export const ErrorCommentAlreadyExits: HttpException = new HttpException('Comment Already Created',
+export const ErrorCommentAlreadyExits: HttpException = new HttpException(
+  'Comment Already Created',
 400,
 );
-export const ErrorCommentNotString: HttpException = new HttpException('Comment id must be a string',
+export const ErrorCommentNotString: HttpException = new HttpException(
+  'Comment id must be a string',
 400,
 );
-export const ErrorCommentAuthorId: HttpException = new HttpException('Comment authorId cannot be empty',
+export const ErrorCommentAuthorId: HttpException = new HttpException(
+  'Comment authorId cannot be empty',
 400,
 );
-export const ErrorCommentPostId: HttpException = new HttpException('This post dont have any comment',
+export const ErrorCommentPostId: HttpException = new HttpException(
+  'This post dont have any comment',
 400,
 );
-export const ErrorCommentNotUpdatedByIdNotTheSame: HttpException = new HttpException('Comment not updated by Id not the same',
+export const ErrorCommentNotUpdatedByIdNotTheSame: HttpException = new HttpException(
+  'Comment not updated by Id not the same',
 400,
 );
-export const ErrorCommentNotfound: HttpException = new HttpException('Comment not found',
+export const ErrorCommentNotfound: HttpException = new HttpException(
+  'Comment not found',
 400,
 );
-export const ErrorCommentNotCreated: HttpException = new HttpException('Comment not created',
+export const ErrorCommentNotCreated: HttpException = new HttpException(
+  'Comment not created',
 400,
 );
 
