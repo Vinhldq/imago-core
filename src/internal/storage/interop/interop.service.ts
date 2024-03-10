@@ -9,8 +9,6 @@ export class InteropService implements StorageInterop {
 
   async uploadFile(files: Express.Multer.File[], storage: StorageDomain, token: string): Promise<string[]> {
     try {
-      const user = await this.authUsecase.verifyToken(token);
-      storage.userId = user.uid
       return await this.storageUsecase.uploadFile(files, storage);
     }catch (e)
     {

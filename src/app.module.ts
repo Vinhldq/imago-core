@@ -25,4 +25,4 @@ import { StorageModule } from './internal/storage/storage.module';
   ],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

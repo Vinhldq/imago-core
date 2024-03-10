@@ -1,10 +1,8 @@
 import { HttpException } from '@nestjs/common';
 
 export interface StorageDomain {
-  files: Express.Multer.File,
+  urls: string,
   fileName: string,
-  userId: string,
-  id: string,
 }
 
 export interface StorageRepository {

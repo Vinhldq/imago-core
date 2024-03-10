@@ -1,5 +1,3 @@
-
-
 import { Inject, Injectable } from '@nestjs/common';
 import {
   StorageDomain,
@@ -21,36 +19,38 @@ export class RepositoryService implements StorageRepository {
     const bucket = this.storage.bucket('gs://itss-imago-0000.appspot.com');
     const publicUrls: string[] = [];
 
-    if (storage.fileName != undefined) {
-      for (const file of files) {
-        const fileUpload = bucket.file(`images/${storage.userId}/${storage.fileName}/${file.originalname}`);
+    await Promise.all(
+      files.map(async(file)=>{
+        const fileName = `images/${storage.fileName}/${file.originalname}`;
+        const fileUpload = bucket.file(fileName);
+
         const blobStream = fileUpload.createWriteStream({
           metadata: {
             contentType: file.mimetype,
           },
         });
 
-        const imageUrl = await new Promise((resolve, reject) => {
-          blobStream.on('finish', async () => {
-            const [url] = await fileUpload.getSignedUrl({
+        await new Promise((resolve, reject) => {
+          blobStream.on('error', async(error)=>{
+            reject(error)
+          })
+
+          blobStream.on('finish', async()=>{
+            const [imageUrl] = await fileUpload.getSignedUrl({
               action: 'read',
-              expires: '01-01-2124',
+              expires: '01-01-2500',
             });
-            resolve(url);
-          });
-          blobStream.on('error', (error) => {
-            reject(`Unable to upload image, something went wrong`);
-          });
+            console.log(imageUrl);
+            publicUrls.push(imageUrl);
+            resolve(imageUrl);
+          })
           blobStream.end(file.buffer);
+
         });
-        if (typeof imageUrl === 'string') {
-          publicUrls.push(imageUrl);
-        }
-      }
-    } else {
-      console.log("Undefined!")
-    }
+      })
+    );
     return publicUrls;
+
   }
 
 }

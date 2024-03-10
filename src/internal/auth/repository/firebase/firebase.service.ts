@@ -14,7 +14,6 @@ import * as admin from 'firebase-admin';
 export class FirebaseService implements AuthRepository {
   auth: assmin.auth.Auth;
   db = admin.firestore();
-
   constructor() {
     this.auth = assmin.auth();
   }
