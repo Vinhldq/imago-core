@@ -135,7 +135,7 @@ export class BaseInteropService implements PostInterop {
       if (post.creatorId == idToken.uid) {
         post.updatedAt = new Date();
         return this.useCase.update(post);
-      } else {
+       } else {
         throw ErrorIllegalUpdate;
       }
     } catch (e) {
