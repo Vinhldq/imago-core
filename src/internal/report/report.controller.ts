@@ -15,6 +15,11 @@ import { Report, ReportInterop } from '../../domain/report.domain';
 export class ReportController {
   constructor(@Inject('ReportInterop') private interop: ReportInterop) {}
 
+  @Get()
+  async getAllReport(@Headers() headers: any) {
+    return this.interop.getAll(headers['authorization']);
+  }
+
   @Get('completed')
   async getAllReportCompleted(
     @Headers() headers: any,
@@ -27,8 +32,13 @@ export class ReportController {
   async getAllReportPending(
     @Headers() headers: any,
     @Query('page') page: number,
+    @Query('type') type: string,
   ) {
-    return this.interop.getAllByStatusPending(headers['authorization'], page);
+    return this.interop.getAllByStatusPending(
+      headers['authorization'],
+      page,
+      type,
+    );
   }
 
   @Post()

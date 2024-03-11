@@ -23,6 +23,15 @@ export class BaseServiceInterop implements ReportInterop {
     }
   }
 
+  async getAll(token: string): Promise<Report[]> {
+    try {
+      await this.authUseCase.verifyToken(token);
+      return this.useCase.getAll();
+    } catch (e) {
+      throw e;
+    }
+  }
+
   async getAllByStatusCompleted(
     token: string,
     page: number,
@@ -35,10 +44,14 @@ export class BaseServiceInterop implements ReportInterop {
     }
   }
 
-  async getAllByStatusPending(token: string, page: number): Promise<AllReport> {
+  async getAllByStatusPending(
+    token: string,
+    page: number,
+    type: string,
+  ): Promise<AllReport> {
     try {
       await this.authUseCase.verifyToken(token);
-      return this.useCase.getAllByStatusPending(page);
+      return this.useCase.getAllByStatusPending(page, type);
     } catch (e) {
       throw e;
     }

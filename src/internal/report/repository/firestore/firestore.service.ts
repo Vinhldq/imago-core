@@ -5,6 +5,8 @@ import {
   ReportRepository,
 } from '../../../../domain/report.domain';
 import * as admin from 'firebase-admin';
+import { Profile } from 'src/domain/profile.domain';
+import { PostDomain } from 'src/domain/post.domain';
 
 @Injectable()
 export class FirestoreService implements ReportRepository {
@@ -27,6 +29,13 @@ export class FirestoreService implements ReportRepository {
       .then();
   }
 
+  async getAll(): Promise<Report[]> {
+    const reportRef = this.db.collection('reports');
+    const snapshot = await reportRef.get();
+    const reports = snapshot.docs.map((doc) => doc.data() as Report);
+    return reports;
+  }
+
   async getAllByStatusCompleted(page: number): Promise<AllReport> {
     const reportRef = this.db.collection('reports');
     const snapshot = await reportRef.where('status', '==', 'completed').get();
@@ -38,11 +47,14 @@ export class FirestoreService implements ReportRepository {
     };
   }
 
-  async getAllByStatusPending(page: number): Promise<AllReport> {
+  async getAllByStatusPending(page: number, type: string): Promise<AllReport> {
     const reportRef = this.db.collection('reports');
-    const snapshot = await reportRef.where('status', '==', 'pending').get();
+    const snapshot = await reportRef
+      .where('status', '==', 'pending')
+      .where('type', '==', type)
+      .get();
     const reports = snapshot.docs.map((doc) => doc.data() as Report);
-    const size = 9;
+    const size = 30;
     return {
       data: reports.slice((page - 1) * size, page * size),
       endPage: Math.ceil(reports.length / size),

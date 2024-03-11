@@ -16,12 +16,16 @@ export class BaseServiceUseCase implements ReportUseCase {
     this.reportRepository.create(report);
   }
 
+  getAll(): Promise<Report[]> {
+    return this.reportRepository.getAll();
+  }
+
   getAllByStatusCompleted(page: number): Promise<AllReport> {
     return this.reportRepository.getAllByStatusCompleted(page);
   }
 
-  getAllByStatusPending(page: number): Promise<AllReport> {
-    return this.reportRepository.getAllByStatusPending(page);
+  getAllByStatusPending(page: number, type: string): Promise<AllReport> {
+    return this.reportRepository.getAllByStatusPending(page, type);
   }
 
   update(id: string) {
