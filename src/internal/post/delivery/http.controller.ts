@@ -43,13 +43,12 @@ export class HttpController {
   @Get('mention')
   async getMention(
     @Headers() headers: any,
-    @Query('mention') mention: string,
     @Query('page') page: number,
     @Query('size') size: number,
   ) {
     let token = headers['authorization'];
     try {
-      return await this.interop.getByMentionId(mention, token, page, size);
+      return await this.interop.getByMentionId(token, page, size);
     } catch (e) {
       throw e;
     }
@@ -144,6 +143,16 @@ export class HttpController {
     let token = headers['authorization'];
     try {
       return await this.interop.delete(id, token);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  @Get('search')
+  async searchPost(@Headers() headers: any, @Query('query') query: string) {
+    let token = headers['authorization'];
+    try {
+      return await this.interop.search('posts', query);
     } catch (e) {
       throw e;
     }

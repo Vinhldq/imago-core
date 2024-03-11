@@ -1,5 +1,6 @@
 import { HttpException } from '@nestjs/common';
 import { Comment } from './comment.domain';
+import { SearchResult } from './search.domain';
 
 export interface PostDomain {
   id: string;
@@ -121,13 +122,14 @@ export interface PostInterop {
   delete(id: string, token: string): Promise<boolean>;
 
   getByMentionId(
-    mention: string,
     token: string,
     page: number,
     size: number,
   ): Promise<PostResponse>;
 
   getAllPost(token: string, page: number): Promise<AllPosts>;
+
+  search(index: string, query: string): Promise<SearchResult<PostDomain>>;
 }
 
 export const ErrorPostNotFound: HttpException = new HttpException(

@@ -10,6 +10,8 @@ import { CommentModule } from './internal/comment/comment.module';
 import { ReportModule } from './internal/report/report.module';
 import { HashtagModule } from './internal/hashtag/hashtag.module';
 import { StorageModule } from './internal/storage/storage.module';
+import { SearchModule } from './internal/search/search.module';
+import { NotificationModule } from './internal/notification/notification.module';
 
 @Module({
   imports: [
@@ -22,7 +24,10 @@ import { StorageModule } from './internal/storage/storage.module';
     RoleModule,
     HashtagModule,
     StorageModule,
+    SearchModule,
+    NotificationModule,
   ],
   providers: [AppService],
+  controllers: [],
 })
-export class AppModule { }
+export class AppModule {}

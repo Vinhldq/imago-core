@@ -111,7 +111,7 @@ export class BaseRepositoryService implements PostRepository {
   async create(post: PostDomain): Promise<any> {
     try {
       await this.db.collection('posts').doc(post.id).set(post);
-      return 'Create success';
+      return true;
     } catch (e) {
       throw e;
     }
@@ -120,7 +120,7 @@ export class BaseRepositoryService implements PostRepository {
   async update(post: PostDomain): Promise<any> {
     try {
       await this.db.collection('posts').doc(post.id).set(post);
-      return 'Update success';
+      return true;
     } catch (e) {
       throw e;
     }
