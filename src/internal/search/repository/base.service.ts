@@ -7,28 +7,57 @@ export class BaseRepositoryService<T> implements SearchRepository<T> {
   private client: Client;
 
   constructor() {
-    this.client = new Client({ node: 'http://localhost:9200' });
+    this.client = new Client({ node: 'http://172.16.0.148:9200' });
   }
-  async create(index: string, item: T): Promise<boolean> {
-    let result = await this.client.index({
-      index: index,
-      body: item,
-    });
-    return true;
+  async create(index: string, item: T, id: string): Promise<boolean> {
+    try {
+      let result = await this.client.index({
+        index: index,
+        body: item,
+        id: id,
+      });
+      if (result.result === 'created') {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.error('Elastic request failed on index', error);
+      throw error;
+    }
   }
-  async update(index: string, item: T): Promise<boolean> {
-    let result = await this.client.index({
-      index: index,
-      body: item,
-    });
-    return true;
+  async update(index: string, item: T, id: string): Promise<boolean> {
+    try {
+      let result = await this.client.index({
+        index: index,
+        body: item,
+        id: id,
+      });
+      if (result.result === 'updated') {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.error('Elastic request failed on index', error);
+      throw error;
+    }
   }
   async delete(index: string, id: string): Promise<boolean> {
-    let result = await this.client.delete({
-      index: index,
-      id: id,
-    });
-    return true;
+    try {
+      let result = await this.client.delete({
+        index: index,
+        id: id,
+      });
+      if (result.result === 'deleted') {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.error('Elastic request failed on index', error);
+      throw error;
+    }
   }
 
   async search(index: string, query: string): Promise<SearchResult<T>> {
@@ -40,6 +69,8 @@ export class BaseRepositoryService<T> implements SearchRepository<T> {
             query: query,
           },
         },
+        from: 0,
+        size: 100,
       },
     });
     return {

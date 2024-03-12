@@ -83,4 +83,13 @@ export class ProfileController {
     let token = headers['authorization'];
     return this.profileInterop.unfollow(token, profileId, otherProfileId);
   }
+
+  @Get('search')
+  search(@Query('query') query: string) {
+    try {
+      return this.profileInterop.search('profiles', query);
+    } catch (e) {
+      throw e;
+    }
+  }
 }

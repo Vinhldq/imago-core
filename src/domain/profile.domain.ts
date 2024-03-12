@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { Auth } from './auth.domain';
+import { SearchResult } from './search.domain';
 
 export interface Profile {
   id: string;
@@ -64,6 +65,8 @@ export interface ProfileInterop {
   ): Promise<boolean>;
 
   getAllAuthProfile(token: string, page: number): Promise<any>;
+
+  search(index: string, query: string): Promise<SearchResult<Profile>>;
 }
 
 export const ErrorProfileExists = new HttpException(

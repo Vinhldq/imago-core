@@ -8,7 +8,6 @@ import {
 } from '../../../../domain/post.domain';
 import { AuthUseCase } from '../../../../domain/auth.domain';
 import { SearchResult, SearchUseCase } from 'src/domain/search.domain';
-import { Profile } from 'src/domain/profile.domain';
 
 @Injectable()
 export class BaseInteropService implements PostInterop {
@@ -141,7 +140,7 @@ export class BaseInteropService implements PostInterop {
       post.updatedAt = null;
       post.deletedAt = null;
       await this.useCase.create(post);
-      await this.searchUsecase.create('posts', post);
+      await this.searchUsecase.create('posts', post, post.id);
       return true;
     } catch (e) {
       throw e;
@@ -154,7 +153,7 @@ export class BaseInteropService implements PostInterop {
       if (post.creatorId == idToken.uid) {
         post.updatedAt = new Date();
         await this.useCase.update(post);
-        await this.searchUsecase.update('posts', post);
+        await this.searchUsecase.update('posts', post, post.id);
         return true;
       } else {
         throw ErrorIllegalUpdate;

@@ -6,13 +6,19 @@ import {
   ProfileInterop,
   ProfileUseCase,
 } from 'src/domain/profile.domain';
+import { SearchResult, SearchUseCase } from 'src/domain/search.domain';
 
 @Injectable()
 export class InteropService implements ProfileInterop {
   constructor(
     @Inject('ProfileUseCase') private profileUseCase: ProfileUseCase,
     @Inject('AuthUseCase') private authUseCase: AuthUseCase,
+    @Inject('SearchUseCase') private searchUseCase: SearchUseCase<Profile>,
   ) {}
+
+  search(index: string, query: string): Promise<SearchResult<Profile>> {
+    return this.searchUseCase.search(index, query);
+  }
 
   async follow(
     token: string,
@@ -44,7 +50,13 @@ export class InteropService implements ProfileInterop {
             profile.following.push(otherProfileId);
             otherProfile.followers.push(profileId);
             await this.profileUseCase.update(profile);
+            await this.searchUseCase.update('profiles', profile, profile.id);
             await this.profileUseCase.update(otherProfile);
+            await this.searchUseCase.update(
+              'profiles',
+              otherProfile,
+              otherProfile.id,
+            );
           }
         }
       } else {
@@ -74,7 +86,13 @@ export class InteropService implements ProfileInterop {
               (item) => item !== profileId,
             );
             await this.profileUseCase.update(profile);
+            await this.searchUseCase.update('profiles', profile, profile.id);
             await this.profileUseCase.update(otherProfile);
+            await this.searchUseCase.update(
+              'profiles',
+              otherProfile,
+              otherProfile.id,
+            );
           }
         }
         if (!this.isExisted(profile.following, otherProfileId)) {
@@ -114,7 +132,9 @@ export class InteropService implements ProfileInterop {
         following: profile.following || [],
         gender: profile.gender || '',
       };
-      return this.profileUseCase.create(profileData);
+      await this.profileUseCase.create(profileData);
+      await this.searchUseCase.create('profiles', profileData, profileData.id);
+      return true;
     } catch (error) {
       throw error;
     }
@@ -128,7 +148,9 @@ export class InteropService implements ProfileInterop {
         ..._profile,
         ...profile,
       };
-      return await this.profileUseCase.update(profileData);
+      await this.profileUseCase.update(profileData);
+      await this.searchUseCase.update('profiles', profileData, profileData.id);
+      return true;
     } catch (error) {
       throw error;
     }

@@ -8,15 +8,31 @@ export class BaseUseCaseService<T> implements SearchUseCase<T> {
   ) {}
 
   search(index: string, query: string): Promise<SearchResult<T>> {
-    return this.repository.search(index, query);
+    try {
+      return this.repository.search(index, query);
+    } catch (error) {
+      throw error;
+    }
   }
-  create(index: string, item: T): Promise<boolean> {
-    return this.repository.create(index, item);
+  create(index: string, item: T, id: string): Promise<boolean> {
+    try {
+      return this.repository.create(index, item, id);
+    } catch (error) {
+      throw error;
+    }
   }
-  update(index: string, item: T): Promise<boolean> {
-    return this.repository.update(index, item);
+  update(index: string, item: T, id: string): Promise<boolean> {
+    try {
+      return this.repository.update(index, item, id);
+    } catch (error) {
+      throw error;
+    }
   }
   delete(index: string, id: string): Promise<boolean> {
-    return this.repository.delete(index, id);
+    try {
+      return this.repository.delete(index, id);
+    } catch (error) {
+      throw error;
+    }
   }
 }
