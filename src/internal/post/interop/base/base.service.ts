@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
-  AllPosts,
   ErrorIllegalUpdate,
   PostDomain,
   PostInterop,
@@ -9,6 +8,7 @@ import {
 } from '../../../../domain/post.domain';
 import { AuthUseCase } from '../../../../domain/auth.domain';
 import { SearchResult, SearchUseCase } from 'src/domain/search.domain';
+import { Profile } from 'src/domain/profile.domain';
 
 @Injectable()
 export class BaseInteropService implements PostInterop {
@@ -17,6 +17,14 @@ export class BaseInteropService implements PostInterop {
     @Inject('AuthUseCase') private authUsecase: AuthUseCase,
     @Inject('SearchUseCase') private searchUsecase: SearchUseCase<PostDomain>,
   ) {}
+  async getProfilePost(token: string): Promise<any> {
+    try {
+      await this.authUsecase.verifyToken(token);
+      return this.useCase.getProfilePost();
+    } catch (e) {
+      throw e;
+    }
+  }
 
   search(index: string, query: string): Promise<SearchResult<PostDomain>> {
     return this.searchUsecase.search(index, query);
@@ -71,10 +79,14 @@ export class BaseInteropService implements PostInterop {
     }
   }
 
-  async getAllPost(token: string, page: number): Promise<AllPosts> {
+  async getAllPost(
+    token: string,
+    page: number,
+    size: number,
+  ): Promise<PostResponse> {
     try {
       await this.authUsecase.verifyToken(token);
-      return this.useCase.getAllPost(page);
+      return this.useCase.getAllPost(page, size);
     } catch (e) {
       throw e;
     }

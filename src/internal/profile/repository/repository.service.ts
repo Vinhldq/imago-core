@@ -17,7 +17,7 @@ export class RepositoryService implements ProfileRepository {
 
   async get(id: string): Promise<Profile> {
     return await this.db
-      .collection('profile')
+      .collection('profiles')
       .doc(id)
       .get()
       .then((doc) => {
@@ -31,7 +31,7 @@ export class RepositoryService implements ProfileRepository {
 
   async getAll(): Promise<Profile[]> {
     return await this.db
-      .collection('profile')
+      .collection('profiles')
       .get()
       .then((snapshot) => {
         let result: Profile[] = [];
@@ -45,7 +45,7 @@ export class RepositoryService implements ProfileRepository {
   async getAllAuthProfile(page: number): Promise<any> {
     const size = 10;
     let auth = await this.db.collection('auths').get();
-    let profile = await this.db.collection('profile').get();
+    let profile = await this.db.collection('profiles').get();
     let result: any[] = [];
     auth.forEach((doc) => {
       let data = doc.data() as Auth;
@@ -62,13 +62,13 @@ export class RepositoryService implements ProfileRepository {
   }
 
   async create(profile: Profile): Promise<boolean> {
-    await this.db.collection('profile').doc(profile.id).set(profile);
+    await this.db.collection('profiles').doc(profile.id).set(profile);
     return true;
   }
 
   async update(profile: Profile): Promise<boolean> {
     await this.db
-      .collection('profile')
+      .collection('profiles')
       .doc(profile.id)
       .update({ ...profile });
     return true;

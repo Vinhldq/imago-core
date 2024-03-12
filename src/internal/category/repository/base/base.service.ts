@@ -25,6 +25,20 @@ export class CategoryRepositoryBaseService implements CategoryRepository {
     }
   }
 
+  async updateCategory(category: CategoryDomain): Promise<boolean> {
+    try {
+      const docRef = this.db.collection('categories').doc(category.id);
+      const doc = await docRef.get();
+      if (!doc.exists) {
+        throw new HttpException('Category not found', 404);
+      }
+      await docRef.set(category);
+      return true;
+    } catch (e) {
+      throw e;
+    }
+  }
+
   async deleteCategory(id: string): Promise<boolean> {
     // try{
     //     const category = await this.db.collection('categories').doc(id).delete();

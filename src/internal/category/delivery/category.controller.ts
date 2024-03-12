@@ -28,6 +28,15 @@ export class CategoryController {
     }
   }
 
+  @Put()
+  async updateCategory(@Query() id: string ,@Body() category: CategoryDomain) {
+    try {
+      await this.interop.updateCategory(id,category);
+    } catch (e) {
+      throw e;
+    }
+  }
+
   @Delete()
   async deleteCategory(@Query('id') id: string) {
     try {
@@ -39,7 +48,6 @@ export class CategoryController {
   @Get()
   async getCategory(@Query('id') id: string) {
     try {
-
       return await this.interop.getCategory(id);
     } catch (e) {
       throw e;

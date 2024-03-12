@@ -11,6 +11,7 @@ export interface AllCategories {
 }
 export interface CategoryRepository {
   createCategory(category: CategoryDomain): Promise<boolean>;
+  updateCategory(category: CategoryDomain): Promise<boolean>;
   deleteCategory(id: string): Promise<boolean>;
   getCategory(id: string): Promise<CategoryDomain>;
   getCategories(page: number): Promise<AllCategories>;
@@ -18,6 +19,7 @@ export interface CategoryRepository {
 
 export interface CategoryUseCase {
   createCategory(category: CategoryDomain): Promise<boolean>;
+  updateCategory(id: string, category: CategoryDomain): Promise<boolean>;
   deleteCategory(id: string): Promise<boolean>;
   getCategory(id: string): Promise<CategoryDomain>;
   getCategories(page: number): Promise<AllCategories>;
@@ -25,6 +27,7 @@ export interface CategoryUseCase {
 
 export interface CategoryInterop {
   createCategory(category: CategoryDomain): any;
+  updateCategory(id: string, category: CategoryDomain): any;
   deleteCategory(id: string): any;
   getCategory(id: string): Promise<CategoryDomain>;
   getCategories(page: number, token: string): Promise<AllCategories>;

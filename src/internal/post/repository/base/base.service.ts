@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import {
-  AllPosts,
   PostDomain,
   PostRepository,
   PostResponse,
 } from '../../../../domain/post.domain';
 import * as admin from 'firebase-admin';
+import { Profile } from 'src/domain/profile.domain';
 
 @Injectable()
 export class BaseRepositoryService implements PostRepository {
@@ -13,6 +13,19 @@ export class BaseRepositoryService implements PostRepository {
 
   constructor() {
     this.db = admin.firestore();
+  }
+  async getProfilePost(): Promise<any> {
+    let post = await this.db.collection('posts').get();
+    let profile = await this.db.collection('profile').get();
+    let result: any[] = [];
+    post.forEach((doc) => {
+      let data = doc.data() as PostDomain;
+      let profileData = profile.docs.find((p) => p.id === data.creatorId);
+      if (profileData) {
+        result.push({ ...data, ...profileData.data().user });
+      }
+    });
+    return result;
   }
 
   async getDetail(id: string): Promise<PostDomain> {
@@ -37,15 +50,14 @@ export class BaseRepositoryService implements PostRepository {
     };
   }
 
-  async getAllPost(page: number): Promise<AllPosts> {
+  async getAllPost(page: number, size: number): Promise<PostResponse> {
     try {
       const postRef = this.db.collection('posts');
       const snapshot = await postRef.get();
       const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
-      const size = 10;
       return {
         data: posts.slice((page - 1) * size, page * size),
-        endpage: Math.ceil(posts.length / size),
+        endPage: Math.ceil(posts.length / size),
       };
     } catch (e) {
       throw e;

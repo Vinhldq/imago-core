@@ -57,6 +57,40 @@ export class CategoryUseCaseBaseService implements CategoryUseCase {
     return this.repository.createCategory(category);
   }
 
+  async updateCategory(id:string, category: CategoryDomain): Promise<boolean> {
+    if (typeof id !== 'string') {
+      throw ErrorCategoryNotString;
+    }
+    if (
+      category.name === '' ||
+      category.name === undefined ||
+      category.name === null
+    ) {
+      throw ErrorCategoryNameRequired;
+    }
+    if (
+      category.photoUrl === '' ||
+      category.photoUrl === undefined ||
+      category.photoUrl === null
+    ) {
+      throw ErrorCategoryPhotoRequired;
+    }
+    let existed = await this.repository.getCategory(id);
+    if (!existed) {
+      throw ErrorCategoryNotFound;
+    }
+    if (
+      !category.name ||
+      !category.photoUrl ||
+      !category.users ||
+      !category.id
+    ) {
+      throw ErrorCategoryNotCreated;
+    }
+    return this.repository.updateCategory(category);
+
+  }
+
   async deleteCategory(id: string): Promise<boolean> {
     let existed = await this.repository.getCategory(id);
     if (!existed) {
