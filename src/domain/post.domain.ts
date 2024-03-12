@@ -1,6 +1,7 @@
 import { HttpException } from '@nestjs/common';
 import { Comment } from './comment.domain';
 import { SearchResult } from './search.domain';
+import { Profile } from './profile.domain';
 
 export interface PostDomain {
   id: string;
@@ -57,7 +58,7 @@ export interface PostRepository {
 
   getAllPost(page: number, size: number): Promise<PostResponse>;
 
-  getProfilePost(): Promise<any>;
+  getProfilePost(page: number, size: number): Promise<any>;
 }
 
 export interface PostUseCase {
@@ -92,7 +93,7 @@ export interface PostUseCase {
 
   getAllPost(page: number, size: number): Promise<PostResponse>;
 
-  getProfilePost(): Promise<any>;
+  getProfilePost(page: number, size: number): Promise<any>;
 }
 
 export interface PostInterop {
@@ -132,39 +133,33 @@ export interface PostInterop {
 
   search(index: string, query: string): Promise<SearchResult<PostDomain>>;
 
-  getProfilePost(token: string): Promise<any>;
+  getProfilePost(token: string, page: number, size: number): Promise<any>;
 }
 
 export const ErrorPostNotFound: HttpException = new HttpException(
   'Post not found',
   404,
 );
-
 export const ErrorPostIdInvalid: HttpException = new HttpException(
   'id is invalid',
   400,
 );
-
 export const ErrorPostDeleteFailed: HttpException = new HttpException(
   'Post not found to delete',
   400,
 );
-
 export const ErrorPostCreateFailed: HttpException = new HttpException(
   'Post create failed',
   400,
 );
-
 export const ErrorEmptySize: HttpException = new HttpException(
   'Post size must be a number',
   400,
 );
-
 export const ErrorEmptyPage: HttpException = new HttpException(
   'Post page is empty',
   400,
 );
-
 export const ErrorEmptyPageData: HttpException = new HttpException(
   'Page is no data',
   400,
@@ -174,17 +169,14 @@ export const ErrorPageIsNaN: HttpException = new HttpException(
   'Page must be a number',
   400,
 );
-
 export const ErrorMinusPage: HttpException = new HttpException(
   ' page cannot be greater than 0',
   400,
 );
-
 export const ErrorPostIdIsEmty: HttpException = new HttpException(
   'PostId cannot be empty',
   400,
 );
-
 export const SizeError: HttpException = new HttpException(
   ' Size must be greater than 0',
   400,
@@ -195,7 +187,6 @@ export const PageError: HttpException = new HttpException(
 
   400,
 );
-
 export const ErrorContentInvalid: HttpException = new HttpException(
   'Content is invalid',
   400,
@@ -205,12 +196,10 @@ export const ErrorPhotoInvalid: HttpException = new HttpException(
   'Photo is invalid',
   400,
 );
-
 export const ErrorInvalidPostBody: HttpException = new HttpException(
   'Body is invalid',
   400,
 );
-
 export const ErrorIllegalUpdate: HttpException = new HttpException(
   'Have no right to update',
   400,

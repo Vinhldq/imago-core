@@ -20,10 +20,14 @@ export class HttpController {
   constructor(@Inject('PostInterop') private interop: PostInterop) {}
 
   @Get('creatorpost')
-  async getProfilePost(@Headers() headers: any) {
+  async getProfilePost(
+    @Headers() headers: any,
+    @Query('page') page: number,
+    @Query('size') size: number,
+  ) {
     let token = headers['authorization'];
     try {
-      return await this.interop.getProfilePost(token);
+      return await this.interop.getProfilePost(token, page, size);
     } catch (e) {
       throw e;
     }
@@ -47,13 +51,7 @@ export class HttpController {
   ) {
     let token = headers['authorization'];
     try {
-      let allPosts = await this.interop.getAllPost(token, page, size);
-      allPosts.data.sort((a, b) => {
-        let dateA = new Date(a.createdAt);
-        let dateB = new Date(b.createdAt);
-        return dateB.getTime() - dateA.getTime();
-      });
-      return allPosts;
+      return await this.interop.getAllPost(token, page, size);
     } catch (e) {
       throw e;
     }

@@ -14,18 +14,24 @@ export class BaseRepositoryService implements PostRepository {
   constructor() {
     this.db = admin.firestore();
   }
-  async getProfilePost(): Promise<any> {
+  async getProfilePost(page: number, size: number): Promise<any> {
     let post = await this.db.collection('posts').get();
-    let profile = await this.db.collection('profile').get();
+    let profile = await this.db.collection('profiles').get();
     let result: any[] = [];
     post.forEach((doc) => {
       let data = doc.data() as PostDomain;
       let profileData = profile.docs.find((p) => p.id === data.creatorId);
       if (profileData) {
-        result.push({ ...data, ...profileData.data().user });
+        result.push({
+          ...data,
+          profile: profileData.data(),
+        });
       }
     });
-    return result;
+    return {
+      data: result.slice((page - 1) * size, page * size),
+      endPage: Math.ceil(result.length / size),
+    };
   }
 
   async getDetail(id: string): Promise<PostDomain> {
@@ -40,25 +46,39 @@ export class BaseRepositoryService implements PostRepository {
     page: number,
     size: number,
   ): Promise<PostResponse> {
-    const postsRef = this.db.collection('posts');
-    const query = postsRef.where('mention', 'array-contains', mention);
-    const snapshot = await query.get();
-    const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
-    return {
-      data: posts.slice((page - 1) * size, page * size),
-      endPage: Math.ceil(posts.length / size),
-    };
-  }
-
-  async getAllPost(page: number, size: number): Promise<PostResponse> {
     try {
-      const postRef = this.db.collection('posts');
-      const snapshot = await postRef.get();
+      const postsRef = this.db.collection('posts');
+      const query = postsRef.where('mention', 'array-contains', mention);
+      const snapshot = await query.get();
       const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
       return {
         data: posts.slice((page - 1) * size, page * size),
         endPage: Math.ceil(posts.length / size),
       };
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async getAllPost(page: number, size: number): Promise<PostResponse> {
+    try {
+      // const notificationsRef = this.db.collection('notifications');
+      // const query = notificationsRef.where('uid', '==', uid)
+      // .orderBy('createdAt', 'desc');
+
+      // return query.get().then((snapshot) => {
+      //   return snapshot.docs.map((doc) => doc.data() as NotificationDomain);
+      // });
+      const postRef = this.db.collection('posts');
+      const query = postRef.orderBy('createdAt', 'asc');
+
+      return query.get().then((snapshot) => {
+        const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
+        return {
+          data: posts.slice((page - 1) * size, page * size),
+          endPage: Math.ceil(posts.length / size),
+        };
+      });
     } catch (e) {
       throw e;
     }
