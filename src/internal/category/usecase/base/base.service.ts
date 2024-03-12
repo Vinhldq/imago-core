@@ -119,7 +119,7 @@ export class CategoryUseCaseBaseService implements CategoryUseCase {
     } else if (page > endpage) {
       throw ErrorEmptyPageData;
     } else {
-      return categoryRef;
+      return this.repository.getCategories(page);
     }
   }
 }
