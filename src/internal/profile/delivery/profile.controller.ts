@@ -23,9 +23,23 @@ export class ProfileController {
   }
 
   @Get('adminuser')
-  getAdminUser(@Headers() headers: any, @Query('page') page: number) {
+  getAllAuthProfile(
+    @Headers() headers: any,
+    @Query('page') page: number,
+    @Query('size') size: number,
+  ) {
     let token = headers['authorization'];
-    return this.profileInterop.getAllAuthProfile(token, page);
+    return this.profileInterop.getAllAuthProfile(token, page, size);
+  }
+
+  @Get('adminuser/noprofile')
+  getAllAuthNoProfile(
+    @Headers() headers: any,
+    @Query('page') page: number,
+    @Query('size') size: number,
+  ) {
+    let token = headers['authorization'];
+    return this.profileInterop.getAllAuthNoProfile(token, page, size);
   }
 
   @Get('mine')

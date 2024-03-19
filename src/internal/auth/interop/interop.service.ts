@@ -28,6 +28,21 @@ export class InteropService implements AuthInterop {
     }
   }
 
+  async unblock(token: string, id: string): Promise<Auth> {
+    try {
+      const decodedToken = await this.authUseCase.verifyToken(token);
+      const account = await this.authUseCase.getById(id);
+      account.isBanned = false;
+      if (account.id === decodedToken.uid) {
+        throw ErrorBlockFailed;
+      } else {
+        return await this.authUseCase.update(account);
+      }
+    } catch (e) {
+      throw e;
+    }
+  }
+
   async changeRole(token: string, id: string, role: string): Promise<Auth> {
     try {
       const decodedToken = await this.authUseCase.verifyToken(token);

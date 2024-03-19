@@ -50,4 +50,9 @@ export class AuthController {
     let token = headers['authorization'];
     return await this.authInterop.block(token, id);
   }
+  @Put('unblock')
+  async unblock(@Headers() headers: any, @Query('id') id: string): Promise<Auth> {
+    let token = headers['authorization'];
+    return await this.authInterop.unblock(token, id);
+  }
 }

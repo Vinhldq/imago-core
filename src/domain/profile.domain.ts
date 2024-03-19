@@ -26,7 +26,9 @@ export interface ProfileRepository {
 
   update(profile: Profile): Promise<boolean>;
 
-  getAllAuthProfile(page: number): Promise<any>;
+  getAllAuthProfile(page: number, size: number): Promise<any>;
+
+  getAllAuthNoProfile(page: number, size: number): Promise<any>;
 }
 
 export interface ProfileUseCase {
@@ -38,7 +40,9 @@ export interface ProfileUseCase {
 
   update(profile: Profile): Promise<boolean>;
 
-  getAllAuthProfile(page: number): Promise<any>;
+  getAllAuthProfile(page: number, size: number): Promise<any>;
+
+  getAllAuthNoProfile(page: number, size: number): Promise<any>;
 }
 
 export interface ProfileInterop {
@@ -64,7 +68,9 @@ export interface ProfileInterop {
     otherProfileId: string,
   ): Promise<boolean>;
 
-  getAllAuthProfile(token: string, page: number): Promise<any>;
+  getAllAuthProfile(token: string, page: number, size: number): Promise<any>;
+
+  getAllAuthNoProfile(token: string, page: number, size: number): Promise<any>;
 
   search(index: string, query: string): Promise<SearchResult<Profile>>;
 }

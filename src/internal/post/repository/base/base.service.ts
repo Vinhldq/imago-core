@@ -62,15 +62,8 @@ export class BaseRepositoryService implements PostRepository {
 
   async getAllPost(page: number, size: number): Promise<PostResponse> {
     try {
-      // const notificationsRef = this.db.collection('notifications');
-      // const query = notificationsRef.where('uid', '==', uid)
-      // .orderBy('createdAt', 'desc');
-
-      // return query.get().then((snapshot) => {
-      //   return snapshot.docs.map((doc) => doc.data() as NotificationDomain);
-      // });
       const postRef = this.db.collection('posts');
-      const query = postRef.orderBy('createdAt', 'asc');
+      const query = postRef.orderBy('createdAt', 'desc');
 
       return query.get().then((snapshot) => {
         const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);

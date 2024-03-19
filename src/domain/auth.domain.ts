@@ -43,6 +43,7 @@ export interface AuthInterop {
   changeRole(token: string, id: string, role: string): Promise<Auth>;
 
   block(token: string, id: string): Promise<Auth>;
+  unblock(token: string, id: string): Promise<Auth>;
 }
 
 export const ErrorUnauthorized = new HttpException(

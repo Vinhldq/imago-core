@@ -177,10 +177,27 @@ export class InteropService implements ProfileInterop {
     }
   }
 
-  async getAllAuthProfile(token: string, page: number): Promise<any> {
+  async getAllAuthProfile(
+    token: string,
+    page: number,
+    size: number,
+  ): Promise<any> {
     try {
       await this.authUseCase.verifyToken(token);
-      return this.profileUseCase.getAllAuthProfile(page);
+      return this.profileUseCase.getAllAuthProfile(page, size);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllAuthNoProfile(
+    token: string,
+    page: number,
+    size: number,
+  ): Promise<any> {
+    try {
+      await this.authUseCase.verifyToken(token);
+      return this.profileUseCase.getAllAuthNoProfile(page, size);
     } catch (error) {
       throw error;
     }

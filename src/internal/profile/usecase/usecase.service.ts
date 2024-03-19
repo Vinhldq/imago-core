@@ -72,9 +72,17 @@ export class UsecaseService implements ProfileUseCase {
   }
 
   // @ts-ignore
-  async getAllAuthProfile(page: number): Promise<any> {
+  async getAllAuthProfile(page: number, size: number): Promise<any> {
     try {
-      return this.profileRepository.getAllAuthProfile(page);
+      return this.profileRepository.getAllAuthProfile(page, size);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllAuthNoProfile(page: number, size: number): Promise<any> {
+    try {
+      return this.profileRepository.getAllAuthNoProfile(page, size);
     } catch (error) {
       throw error;
     }
