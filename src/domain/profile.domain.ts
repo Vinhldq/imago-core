@@ -73,6 +73,9 @@ export interface ProfileInterop {
   getAllAuthNoProfile(token: string, page: number, size: number): Promise<any>;
 
   search(index: string, query: string): Promise<SearchResult<Profile>>;
+
+  //get all profiles except mine
+  getAllExceptMine(token: string): Promise<Profile[]>;
 }
 
 export const ErrorProfileExists = new HttpException(

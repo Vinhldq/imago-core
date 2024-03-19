@@ -68,7 +68,7 @@ export class RepositoryService implements ProfileRepository {
       if (profileData) {
         result.push({
           ...data,
-          ...profileData.data(),
+          profile:profileData.data(),
           numberPost: count,
         });
       }

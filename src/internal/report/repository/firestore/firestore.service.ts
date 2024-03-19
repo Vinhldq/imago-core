@@ -38,27 +38,32 @@ export class FirestoreService implements ReportRepository {
 
   async getAllByStatusCompleted(page: number): Promise<AllReport> {
     const reportRef = this.db.collection('reports');
-    const snapshot = await reportRef.where('status', '==', 'completed').get();
-    const reports = snapshot.docs.map((doc) => doc.data() as Report);
-    const size = 9;
-    return {
-      data: reports.slice((page - 1) * size, page * size),
-      endPage: Math.ceil(reports.length / size),
-    };
+    const snapshot = reportRef
+      .where('status', '==', 'completed').orderBy('updatedAt', 'asc');
+    const size = 10;
+    return snapshot.get().then((querySnapshot) => {
+      const reports = querySnapshot.docs.map((doc) => doc.data() as Report);
+      return {
+        data: reports.slice((page - 1) * size, page * size),
+        endPage: Math.ceil(reports.length / size),
+      };
+    }
+    );
   }
 
   async getAllByStatusPending(page: number, type: string): Promise<AllReport> {
     const reportRef = this.db.collection('reports');
-    const snapshot = await reportRef
-      .where('status', '==', 'pending')
-      .where('type', '==', type)
-      .get();
-    const reports = snapshot.docs.map((doc) => doc.data() as Report);
-    const size = 30;
-    return {
-      data: reports.slice((page - 1) * size, page * size),
-      endPage: Math.ceil(reports.length / size),
-    };
+    const snapshot = reportRef
+      .where('status', '==', 'pending').where('type', '==', type).orderBy('createdAt', 'desc');
+    const size = 10;
+    return snapshot.get().then((querySnapshot) => {
+      const reports = querySnapshot.docs.map((doc) => doc.data() as Report);
+      return {
+        data: reports.slice((page - 1) * size, page * size),
+        endPage: Math.ceil(reports.length / size),
+      };
+    }
+    );
   }
 
   update(id: string) {

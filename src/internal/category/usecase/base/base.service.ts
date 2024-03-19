@@ -23,6 +23,9 @@ export class CategoryUseCaseBaseService implements CategoryUseCase {
   constructor(
     @Inject('CategoryRepository') private repository: CategoryRepository,
   ) {}
+  getAllCategories(): Promise<CategoryDomain[]> {
+    return this.repository.getAllCategories();
+  }
 
   async createCategory(category: CategoryDomain): Promise<boolean> {
     if (typeof category.id !== 'string') {

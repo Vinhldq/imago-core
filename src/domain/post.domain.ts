@@ -2,6 +2,7 @@ import { HttpException } from '@nestjs/common';
 import { Comment } from './comment.domain';
 import { SearchResult } from './search.domain';
 import { Profile } from './profile.domain';
+import { CategoryDomain } from './category.domain';
 
 export interface PostDomain {
   id: string;
@@ -59,6 +60,8 @@ export interface PostRepository {
   getAllPost(page: number, size: number): Promise<PostResponse>;
 
   getProfilePost(page: number, size: number): Promise<any>;
+
+  updateByAdmin(post: PostDomain, id: string): Promise<any>;
 }
 
 export interface PostUseCase {
@@ -94,6 +97,8 @@ export interface PostUseCase {
   getAllPost(page: number, size: number): Promise<PostResponse>;
 
   getProfilePost(page: number, size: number): Promise<any>;
+
+  updateByAdmin(post: PostDomain, id: string): Promise<any>;
 }
 
 export interface PostInterop {
@@ -134,6 +139,18 @@ export interface PostInterop {
   search(index: string, query: string): Promise<SearchResult<PostDomain>>;
 
   getProfilePost(token: string, page: number, size: number): Promise<any>;
+
+  reactionPost(
+    token: string,
+    postId: string,
+    senderId: string,
+  ): Promise<boolean>;
+  unReactionPost(
+    token: string,
+    postId: string,
+    senderId: string,
+  ): Promise<boolean>;
+  updateByAdmin(post: PostDomain, id: string, token: string): Promise<any>;
 }
 
 export const ErrorPostNotFound: HttpException = new HttpException(

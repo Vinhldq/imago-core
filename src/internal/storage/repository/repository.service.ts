@@ -18,7 +18,7 @@ export class RepositoryService implements StorageRepository {
     storage: StorageDomain,
   ): Promise<string[]> {
     //how to upload a file to firebase storage
-    const bucket = this.storage.bucket('gs://imago-backup.appspot.com');
+    const bucket = this.storage.bucket('gs://imago-core-offical.appspot.com');
     const publicUrls: string[] = [];
 
     await Promise.all(
@@ -42,7 +42,6 @@ export class RepositoryService implements StorageRepository {
               action: 'read',
               expires: '01-01-2500',
             });
-            console.log(imageUrl);
             publicUrls.push(imageUrl);
             resolve(imageUrl);
           });

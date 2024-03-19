@@ -25,32 +25,27 @@ export class RoleBaseInteropService implements RoleInterop {
     @Inject('AuthUseCase') private authUseCase: AuthUseCase,
   ) {}
 
-  async getAllRole(token: string, page: number): Promise<RolePagination> {
-    try {
-      await this.authUseCase.verifyToken(token);
-      return await this.roleUseCase.getAllRole(page);
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getListRole(token: string, page: number): Promise<RolePagination> {
-    try {
-      await this.authUseCase.verifyToken(token);
-      return await this.roleUseCase.getListRole(page);
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async searchRole(
+  async getAllRole(
     token: string,
-    keyword: string,
     page: number,
+    size: number,
   ): Promise<RolePagination> {
     try {
       await this.authUseCase.verifyToken(token);
-      return await this.roleUseCase.searchRole(keyword, page);
+      return await this.roleUseCase.getAllRole(page, size);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getListRole(
+    token: string,
+    page: number,
+    size: number,
+  ): Promise<RolePagination> {
+    try {
+      await this.authUseCase.verifyToken(token);
+      return await this.roleUseCase.getListRole(page, size);
     } catch (error) {
       throw error;
     }

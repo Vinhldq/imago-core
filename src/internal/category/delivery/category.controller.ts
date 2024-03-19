@@ -65,4 +65,14 @@ export class CategoryController {
       throw e;
     }
   }
+
+  @Get('all-categories')
+  async getAllCategories(@Headers() headers: any) {
+    let token = headers['authorization'];
+    try {
+      return await this.interop.getAllCategories(token);
+    } catch (e) {
+      throw e;
+    }
+  }
 }

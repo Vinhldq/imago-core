@@ -51,6 +51,7 @@ export interface ReportInterop {
 
   getAllByStatusCompleted(token: string, page: number): Promise<AllReport>;
 
+
   getAllByStatusPending(
     token: string,
     page: number,

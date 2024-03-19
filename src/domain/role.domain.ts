@@ -13,7 +13,7 @@ export interface RolePagination {
 }
 
 export interface RoleRepository {
-  getAllRole(page: number): Promise<RolePagination>;
+  getAllRole(page: number, size: number): Promise<RolePagination>;
 
   createRole(role: Role): Promise<admin.firestore.WriteResult>;
 
@@ -21,13 +21,11 @@ export interface RoleRepository {
 
   deleteRole(id: string): Promise<admin.firestore.WriteResult>;
 
-  searchRole(keyword: string, page: number): Promise<RolePagination>;
-
-  getListRole(page: number): Promise<any>;
+  getListRole(page: number, size: number): Promise<any>;
 }
 
 export interface RoleUseCase {
-  getAllRole(page: number): Promise<RolePagination>;
+  getAllRole(page: number, size: number): Promise<RolePagination>;
 
   createRole(role: Role): Promise<admin.firestore.WriteResult>;
 
@@ -35,13 +33,15 @@ export interface RoleUseCase {
 
   deleteRole(id: string): Promise<admin.firestore.WriteResult>;
 
-  searchRole(keyword: string, page: number): Promise<RolePagination>;
-
-  getListRole(page: number): Promise<any>;
+  getListRole(page: number, size: number): Promise<any>;
 }
 
 export interface RoleInterop {
-  getAllRole(token: string, page: number): Promise<RolePagination>;
+  getAllRole(
+    token: string,
+    page: number,
+    size: number,
+  ): Promise<RolePagination>;
 
   createRole(token: string, role: Role): Promise<admin.firestore.WriteResult>;
 
@@ -53,13 +53,7 @@ export interface RoleInterop {
 
   deleteRole(token: string, id: string): Promise<admin.firestore.WriteResult>;
 
-  searchRole(
-    token: string,
-    keyword: string,
-    page: number,
-  ): Promise<RolePagination>;
-
-  getListRole(token: string, page: number): Promise<any>;
+  getListRole(token: string, page: number, size: number): Promise<any>;
 }
 
 export const errorRoleNotFound = new HttpException(
@@ -108,7 +102,12 @@ export const ErrorMinusPage: HttpException = new HttpException(
   'Page must be greater than 0',
   HttpStatus.BAD_REQUEST,
 );
-export const ErrorEmptyPageData: HttpException = new HttpException(
-  'Page is no data',
-  400,
+
+export const ErrorEmptySize: HttpException = new HttpException(
+  'Role page is empty',
+  HttpStatus.BAD_REQUEST,
+);
+export const ErrorMinusSize: HttpException = new HttpException(
+  'Page must be greater than 0',
+  HttpStatus.BAD_REQUEST,
 );

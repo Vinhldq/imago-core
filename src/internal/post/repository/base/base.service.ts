@@ -14,13 +14,23 @@ export class BaseRepositoryService implements PostRepository {
   constructor() {
     this.db = admin.firestore();
   }
+
+  async updateByAdmin(post: PostDomain, id: string): Promise<any> {
+    try {
+      await this.db.collection('posts').doc(id).set(post);
+      return true;
+    } catch (e) {
+      throw e;
+    }
+  }
   async getProfilePost(page: number, size: number): Promise<any> {
     let post = await this.db.collection('posts').get();
     let profile = await this.db.collection('profiles').get();
     let result: any[] = [];
     post.forEach((doc) => {
       let data = doc.data() as PostDomain;
-      let profileData = profile.docs.find((p) => p.id === data.creatorId);
+      //get all data
+      let profileData = profile.docs.find((item) => item.id === data.creatorId);
       if (profileData) {
         result.push({
           ...data,
@@ -36,7 +46,6 @@ export class BaseRepositoryService implements PostRepository {
 
   async getDetail(id: string): Promise<PostDomain> {
     const post = await this.db.collection('posts').doc(id).get();
-    console.log(id);
 
     return post.data() as PostDomain;
   }

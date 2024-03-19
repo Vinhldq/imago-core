@@ -64,23 +64,32 @@ export class CommentUseCaseBaseService implements CommentUseCase {
     postId: string,
     page: number,
     ): Promise<CommentRespone> {
-    let endpage: number;
-
-    const comments = await this.repository.getCommentsByPostId(postId, page);
-    endpage = comments.endpage;
-    if(postId === "" ){
-        throw ErrorPostId;
+    // if don't have data return []
+    if (postId === '' || postId === null || postId === undefined) {
+      throw ErrorPostId;
     }
-    else if (page < 1) {
-      throw PageError;
-    } else if (page === undefined || page === null || isNaN(page)) {
+    if (page === undefined || page === null) {
       throw ErrorEmptyPage;
     }
-    else if (page > endpage){
-      throw ErrorEmptyPageData;
+    if (isNaN(page)) {
+      throw PageError;
+    }
+    if (page < 1) {
+      throw PageError;
+    }
+    const comments = await this.repository.getCommentsByPostId(postId, page);
+    const size = 10;
+    if (comments.data.length === 0) {
+      return {
+        data: [],
+        endpage: 0,
+      };
     }
     else {
-      return comments;
+      return {
+        data: comments.data.slice((page - 1) * size, page * size),
+        endpage: Math.ceil(comments.data.length / size),
+      };
     }
   }
     async getComments(): Promise<Comment[]> {

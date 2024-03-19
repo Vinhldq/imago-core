@@ -15,6 +15,7 @@ export interface CategoryRepository {
   deleteCategory(id: string): Promise<boolean>;
   getCategory(id: string): Promise<CategoryDomain>;
   getCategories(page: number): Promise<AllCategories>;
+  getAllCategories(): Promise<CategoryDomain[]>;
 }
 
 export interface CategoryUseCase {
@@ -23,6 +24,7 @@ export interface CategoryUseCase {
   deleteCategory(id: string): Promise<boolean>;
   getCategory(id: string): Promise<CategoryDomain>;
   getCategories(page: number): Promise<AllCategories>;
+  getAllCategories(): Promise<CategoryDomain[]>;
 }
 
 export interface CategoryInterop {
@@ -31,6 +33,7 @@ export interface CategoryInterop {
   deleteCategory(id: string): any;
   getCategory(id: string): Promise<CategoryDomain>;
   getCategories(page: number, token: string): Promise<AllCategories>;
+  getAllCategories(token: string): Promise<CategoryDomain[]>;
 }
 
 export const ErrorCategoryNameRequired: HttpException = new HttpException(

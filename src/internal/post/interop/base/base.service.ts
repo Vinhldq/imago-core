@@ -8,6 +8,7 @@ import {
 } from '../../../../domain/post.domain';
 import { AuthUseCase } from '../../../../domain/auth.domain';
 import { SearchResult, SearchUseCase } from 'src/domain/search.domain';
+import { ProfileUseCase } from '../../../../domain/profile.domain';
 
 @Injectable()
 export class BaseInteropService implements PostInterop {
@@ -15,7 +16,21 @@ export class BaseInteropService implements PostInterop {
     @Inject('PostUseCase') private useCase: PostUseCase,
     @Inject('AuthUseCase') private authUsecase: AuthUseCase,
     @Inject('SearchUseCase') private searchUsecase: SearchUseCase<PostDomain>,
+    @Inject('ProfileUseCase') private profileUseCase: ProfileUseCase,
   ) {}
+
+  async updateByAdmin(
+    post: PostDomain,
+    id: string,
+    token: string,
+  ): Promise<any> {
+    try {
+      await this.authUsecase.verifyToken(token);
+      return await this.useCase.updateByAdmin(post, id);
+    } catch (e) {
+      throw e;
+    }
+  }
   async getProfilePost(
     token: string,
     page: number,
@@ -177,5 +192,52 @@ export class BaseInteropService implements PostInterop {
     } catch (e) {
       throw e;
     }
+  }
+
+  async reactionPost(
+    token: string,
+    postId: string,
+    senderId: string,
+  ): Promise<boolean> {
+    let idToken = await this.authUsecase.verifyToken(token);
+    if (idToken) {
+      let profile = await this.profileUseCase.get(senderId);
+      if (profile) {
+        let post = await this.useCase.getDetail(postId);
+        if (post) {
+          if (post.reaction.includes(senderId)) {
+            post.reaction = post.reaction.filter((id) => id !== senderId);
+          } else {
+            post.reaction.push(senderId);
+          }
+          await this.useCase.update(post);
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  // unReaction delete senderId in reaction array
+  async unReactionPost(
+    token: string,
+    postId: string,
+    senderId: string,
+  ): Promise<boolean> {
+    let idToken = await this.authUsecase.verifyToken(token);
+    if (idToken) {
+      let profile = await this.profileUseCase.get(senderId);
+      if (profile) {
+        let post = await this.useCase.getDetail(postId);
+        if (post) {
+          if (post.reaction.includes(senderId)) {
+            post.reaction = post.reaction.filter((id) => id !== senderId);
+          }
+          await this.useCase.update(post);
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }

@@ -84,4 +84,14 @@ export class CategoryRepositoryBaseService implements CategoryRepository {
       throw e;
     }
   }
+
+  async getAllCategories(): Promise<CategoryDomain[]> {
+    try {
+      const categoryRef = this.db.collection('categories');
+      const snapshot = await categoryRef.get();
+      return snapshot.docs.map((doc) => doc.data() as CategoryDomain);
+    } catch (e) {
+      throw e;
+    }
+  }
 }

@@ -8,6 +8,12 @@ import {
   ProfileUseCase,
 } from 'src/domain/profile.domain';
 import { Auth } from '../../../domain/auth.domain';
+import {
+  ErrorEmptyPage,
+  ErrorEmptySize,
+  ErrorMinusPage,
+} from '../../../domain/post.domain';
+import { ErrorMinusSize } from '../../../domain/role.domain';
 
 @Injectable()
 export class UsecaseService implements ProfileUseCase {
@@ -74,7 +80,17 @@ export class UsecaseService implements ProfileUseCase {
   // @ts-ignore
   async getAllAuthProfile(page: number, size: number): Promise<any> {
     try {
-      return this.profileRepository.getAllAuthProfile(page, size);
+      if (page < 1) {
+        throw ErrorMinusPage;
+      } else if (page < 1) {
+        throw ErrorMinusSize;
+      } else if (page === undefined || page === null || isNaN(page)) {
+        throw ErrorEmptyPage;
+      } else if (size === undefined || size === null || isNaN(size)) {
+        throw ErrorEmptySize;
+      } else {
+        return this.profileRepository.getAllAuthProfile(page, size);
+      }
     } catch (error) {
       throw error;
     }
@@ -82,7 +98,17 @@ export class UsecaseService implements ProfileUseCase {
 
   async getAllAuthNoProfile(page: number, size: number): Promise<any> {
     try {
-      return this.profileRepository.getAllAuthNoProfile(page, size);
+      if (page < 1) {
+        throw ErrorMinusPage;
+      } else if (page < 1) {
+        throw ErrorMinusSize;
+      } else if (page === undefined || page === null || isNaN(page)) {
+        throw ErrorEmptyPage;
+      } else if (size === undefined || size === null || isNaN(size)) {
+        throw ErrorEmptySize;
+      } else {
+        return this.profileRepository.getAllAuthNoProfile(page, size);
+      }
     } catch (error) {
       throw error;
     }

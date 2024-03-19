@@ -16,25 +16,23 @@ export class RoleController {
   constructor(@Inject('RoleInterop') private roleInterop: RoleInterop) {}
 
   @Get('/all')
-  getAllRole(@Headers() headers: any, @Query('page') page: number) {
+  getAllRole(
+    @Headers() headers: any,
+    @Query('page') page: number,
+    @Query('size') size: number,
+  ) {
     let token = headers['authorization'];
-    return this.roleInterop.getAllRole(token, page);
+    return this.roleInterop.getAllRole(token, page, size);
   }
 
   @Get('list')
-  getListRole(@Headers() headers: any, @Query('page') page: number) {
-    let token = headers['authorization'];
-    return this.roleInterop.getListRole(token, page);
-  }
-
-  @Get()
-  searchRole(
+  getListRole(
     @Headers() headers: any,
-    @Query('keyword') keyword: string,
     @Query('page') page: number,
+    @Query('size') size: number,
   ) {
     let token = headers['authorization'];
-    return this.roleInterop.searchRole(token, keyword, page);
+    return this.roleInterop.getListRole(token, page, size);
   }
 
   @Post()

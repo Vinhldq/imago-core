@@ -19,6 +19,23 @@ import {
 export class HttpController {
   constructor(@Inject('PostInterop') private interop: PostInterop) {}
 
+  @Put('updatebyadmin')
+  async updateByAdmin(
+    @Headers() headers: any,
+    @Body() post: PostDomain,
+    @Query('id') id: string,
+  ) {
+    let token = headers['authorization'];
+    if (!post || Object.keys(post).length === 0) {
+      throw ErrorInvalidPostBody;
+    }
+    try {
+      return await this.interop.updateByAdmin(post, id, token);
+    } catch (e) {
+      throw e;
+    }
+  }
+
   @Get('creatorpost')
   async getProfilePost(
     @Headers() headers: any,
@@ -169,6 +186,26 @@ export class HttpController {
   async searchPost(@Headers() headers: any, @Query('query') query: string) {
     try {
       return await this.interop.search('posts', query);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  @Put('reaction')
+  async reactionPost(@Headers() headers: any, @Query('postId') postId: string, @Query('senderId') senderId: string) {
+    let token = headers['authorization'];
+    try {
+      return await this.interop.reactionPost(token, postId, senderId);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  @Put('unReaction')
+  async unReactionPost(@Headers() headers: any, @Query('postId') postId: string, @Query('senderId') senderId: string) {
+    let token = headers['authorization'];
+    try {
+      return await this.interop.unReactionPost(token, postId, senderId);
     } catch (e) {
       throw e;
     }

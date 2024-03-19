@@ -6,9 +6,11 @@ import {
   Headers,
   Get,
   Query,
-  Delete, Put, HttpException,
+  Delete,
+  Put,
+  HttpException,
 } from '@nestjs/common';
-import { CommentInterop,  } from '../../../domain/comment.domain';
+import { CommentInterop } from '../../../domain/comment.domain';
 import { Comment } from '../../../domain/comment.domain';
 
 @Controller('v1/comment')
@@ -25,24 +27,30 @@ export class CommentController {
     }
   }
   @Delete()
-  async deleteComment(@Headers() headers: any,@Query('id') id: string, @Body() comment: Comment) {
+  async deleteComment(
+    @Headers() headers: any,
+    @Query('id') id: string,
+    @Body() comment: Comment,
+  ) {
     let token = headers['authorization'];
     try {
-        return await this.interop.deleteComment(token, id, comment);
-
+      return await this.interop.deleteComment(token, id, comment);
     } catch (e) {
       throw e;
     }
   }
   @Put()
-  async updateComment(@Headers() headers: any, @Query('id') id: string, @Body() comment: Comment){
+  async updateComment(
+    @Headers() headers: any,
+    @Query('id') id: string,
+    @Body() comment: Comment,
+  ) {
     let token = headers['authorization'];
     try {
-      const updateRef =  await this.interop.updateComment(token, id, comment);
+      const updateRef = await this.interop.updateComment(token, id, comment);
       if (id !== comment.id) {
         return false;
       }
-
     } catch (e) {
       throw e;
     }
@@ -50,7 +58,6 @@ export class CommentController {
   @Get()
   async getCommentById(@Headers() headers: any, @Query('id') id: string) {
     let token = headers['authorization'];
-    console.log(id);
     try {
       return await this.interop.getCommentById(token, id);
     } catch (e) {
@@ -70,12 +77,11 @@ export class CommentController {
   async getCommentsByPostId(
     @Headers() headers: any,
     @Query('postId') postId: string,
-    @Query('page') page: number
-  )
-  {
+    @Query('page') page: number,
+  ) {
     let token = headers['authorization'];
     try {
-      return await this.interop.getCommentsByPostId(token, postId,page);
+      return await this.interop.getCommentsByPostId(token, postId, page);
     } catch (e) {
       throw e;
     }

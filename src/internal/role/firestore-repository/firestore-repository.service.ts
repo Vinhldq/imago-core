@@ -16,21 +16,19 @@ export class FirestoreRepositoryService implements RoleRepository {
     this.db = admin.firestore();
   }
 
-  async getAllRole(page: number): Promise<RolePagination> {
+  async getAllRole(page: number, size: number): Promise<RolePagination> {
     const roleRef = this.db.collection('roles');
     const snapshot = await roleRef.get();
     const roles = snapshot.docs.map((doc) => doc.data() as Role);
-    const size = 10;
     return {
       data: roles.slice((page - 1) * size, page * size),
       endPage: Math.ceil(roles.length / size),
     };
   }
 
-  async getListRole(page: number): Promise<any> {
-    const size = 10;
+  async getListRole(page: number, size: number): Promise<any> {
     let auth = await this.db.collection('auths').get();
-    let profile = await this.db.collection('profile').get();
+    let profile = await this.db.collection('profiles').get();
     let result: any[] = [];
     auth.forEach((doc) => {
       let data = doc.data() as Auth;
@@ -48,27 +46,6 @@ export class FirestoreRepositoryService implements RoleRepository {
     return {
       data: result.slice((+page - 1) * size, +page * size),
       endPage: page,
-    };
-  }
-
-  async searchRole(keyword: string, page: number): Promise<RolePagination> {
-    const roleRef = await this.getAllRole(page);
-    const roles = roleRef.data;
-
-    const pageData = this.db.collection('roles');
-    const snapshot = await pageData.get();
-    const data = snapshot.docs.map((doc) => doc.data() as Role);
-
-    let result = roles.filter((role) => {
-      return role.name.toLowerCase().includes(keyword.toLowerCase());
-    });
-    const size = roles.length;
-    if (result.length === 0) {
-      throw searchRoleEmpty;
-    }
-    return {
-      data: result.slice((page - 1) * size, page * size),
-      endPage: Math.ceil(result.length / size),
     };
   }
 

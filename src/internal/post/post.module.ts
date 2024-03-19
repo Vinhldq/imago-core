@@ -5,6 +5,7 @@ import { BaseUseCaseService } from './usecase/base/base.service';
 import { BaseRepositoryService } from './repository/base/base.service';
 import { BaseInteropService } from './interop/base/base.service';
 import { SearchModule } from '../search/search.module';
+import { ProfileModule } from '../profile/profile.module';
 
 @Module({
   providers: [
@@ -13,7 +14,7 @@ import { SearchModule } from '../search/search.module';
     { provide: 'PostInterop', useClass: BaseInteropService },
   ],
   controllers: [HttpController],
-  imports: [AuthModule, SearchModule],
+  imports: [AuthModule, SearchModule, ProfileModule],
   exports: ['PostRepository', 'PostUseCase', 'PostInterop'],
 })
 export class PostModule {}

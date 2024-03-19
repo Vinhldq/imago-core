@@ -26,6 +26,10 @@ export class BaseUseCaseService implements PostUseCase {
   constructor(
     @Inject('PostRepository') private postRepository: PostRepository,
   ) {}
+
+  async updateByAdmin(post: PostDomain, id: string): Promise<any> {
+    return await this.postRepository.updateByAdmin(post, id);
+  }
   getProfilePost(page: number, size: number): Promise<any> {
     return this.postRepository.getProfilePost(page, size);
   }
@@ -166,10 +170,10 @@ export class BaseUseCaseService implements PostUseCase {
   }
 
   update(post: PostDomain): Promise<boolean> {
-    if (this.isEmptyPhotoUrl(post)) {
+    if (!this.isEmptyPhotoUrl(post)) {
       throw ErrorPhotoInvalid;
     }
-    if (this.isEmptyContent(post)) {
+    if (!this.isEmptyContent(post)) {
       throw ErrorContentInvalid;
     }
     return this.postRepository.update(post);

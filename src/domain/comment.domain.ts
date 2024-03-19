@@ -6,6 +6,7 @@ export interface Comment {
   content: string;
   postId: string;
   authorId: string;
+  createdAt: string;
 }
 export interface CommentRespone {
   data: Comment[];

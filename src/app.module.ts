@@ -10,6 +10,7 @@ import { CommentModule } from './internal/comment/comment.module';
 import { ReportModule } from './internal/report/report.module';
 import { HashtagModule } from './internal/hashtag/hashtag.module';
 import { StorageModule } from './internal/storage/storage.module';
+import { AppController } from './app.controller';
 import { SearchModule } from './internal/search/search.module';
 import { NotificationModule } from './internal/notification/notification.module';
 
@@ -27,7 +28,7 @@ import { NotificationModule } from './internal/notification/notification.module'
     SearchModule,
     NotificationModule,
   ],
+  controllers: [AppController],
   providers: [AppService],
-  controllers: [],
 })
 export class AppModule {}

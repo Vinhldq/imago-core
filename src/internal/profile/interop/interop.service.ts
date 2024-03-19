@@ -30,37 +30,23 @@ export class InteropService implements ProfileInterop {
       let profile = await this.profileUseCase.get(profileId);
       let otherProfile = await this.profileUseCase.get(otherProfileId);
       if (profile) {
-        if (
-          this.isExisted(profile.following, otherProfileId) ||
-          profileId === otherProfileId
-        ) {
-          return false;
+        if (!this.isExisted(profile.following, otherProfileId)) {
+          profile.following.push(otherProfileId);
+          otherProfile.followers.push(profileId);
+          await this.profileUseCase.update(profile);
+          await this.searchUseCase.update('profiles', profile, profile.id);
+          await this.profileUseCase.update(otherProfile);
+          await this.searchUseCase.update(
+            'profiles',
+            otherProfile,
+            otherProfile.id,
+          );
         }
-        if (
-          !profile.following === undefined ||
-          profile.following.length === 0 ||
-          !this.isExisted(profile.following, otherProfileId)
-        ) {
-          if (
-            !otherProfile.followers === undefined ||
-            otherProfile.followers.length === 0 ||
-            otherProfile.followers.includes(profileId) ||
-            profile.followers.includes(otherProfileId)
-          ) {
-            profile.following.push(otherProfileId);
-            otherProfile.followers.push(profileId);
-            await this.profileUseCase.update(profile);
-            await this.searchUseCase.update('profiles', profile, profile.id);
-            await this.profileUseCase.update(otherProfile);
-            await this.searchUseCase.update(
-              'profiles',
-              otherProfile,
-              otherProfile.id,
-            );
-          }
+        if (this.isExisted(profile.following, otherProfileId)) {
+          return;
         }
       } else {
-        return true;
+        return;
       }
     } catch (error) {
       throw error;
@@ -78,22 +64,20 @@ export class InteropService implements ProfileInterop {
       let otherProfile = await this.profileUseCase.get(otherProfileId);
       if (profile) {
         if (this.isExisted(profile.following, otherProfileId)) {
-          if (otherProfile.followers.includes(profileId)) {
-            profile.following = profile.following.filter(
-              (item) => item !== otherProfileId,
-            );
-            otherProfile.followers = otherProfile.followers.filter(
-              (item) => item !== profileId,
-            );
-            await this.profileUseCase.update(profile);
-            await this.searchUseCase.update('profiles', profile, profile.id);
-            await this.profileUseCase.update(otherProfile);
-            await this.searchUseCase.update(
-              'profiles',
-              otherProfile,
-              otherProfile.id,
-            );
-          }
+          profile.following = profile.following.filter(
+            (item) => item !== otherProfileId,
+          );
+          otherProfile.followers = otherProfile.followers.filter(
+            (item) => item !== profileId,
+          );
+          await this.profileUseCase.update(profile);
+          await this.searchUseCase.update('profiles', profile, profile.id);
+          await this.profileUseCase.update(otherProfile);
+          await this.searchUseCase.update(
+            'profiles',
+            otherProfile,
+            otherProfile.id,
+          );
         }
         if (!this.isExisted(profile.following, otherProfileId)) {
           return;
@@ -207,6 +191,19 @@ export class InteropService implements ProfileInterop {
     try {
       const decodedToken = await this.authUseCase.verifyToken(token);
       return this.profileUseCase.get(decodedToken.uid);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  //get all profiles except mine profile
+  async getAllExceptMine(token: string): Promise<Profile[]> {
+    try {
+      const decodedToken = await this.authUseCase.verifyToken(token);
+      const profile = await this.profileUseCase.get(decodedToken.uid);
+      return this.profileUseCase.getAll().then((profiles) => {
+        return profiles.filter((item) => item.id !== profile.id);
+      });
     } catch (error) {
       throw error;
     }
